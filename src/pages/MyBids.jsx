@@ -14,7 +14,7 @@ const MyBids = () => {
     }
 
   })
-  console.log(bids);
+
 
 
   return (
