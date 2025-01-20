@@ -1,14 +1,38 @@
 /* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet'
 import JobCard from '../components/JobCard'
-
-import UseJobs from '../hooks/UseJobs'
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import { useState } from 'react';
 
 
 const AllJobs = () => {
+  const [filter, setFilter] = useState("")
+  const [search, setSearch] = useState("")
+  const [sort, setSort] = useState("")
 
-  const { jobs } = UseJobs()
- 
+  const { data: jobs = [] } = useQuery({
+    queryKey: ["all-jobs", filter, search, sort],
+    queryFn: async () => {
+      const { data } = await axios(`http://localhost:9000/all-jobs?filter=${filter}&search=${search}&sort=${sort}`);
+      return data;
+
+
+    },
+  });
+
+  const handleReset = () => {
+    setFilter("")
+    setSearch("")
+    setSort("")
+  }
+
+
+
+
+
+
+
 
 
 
@@ -21,7 +45,9 @@ const AllJobs = () => {
         <div className='flex flex-col md:flex-row justify-center items-center gap-5 '>
           <div>
             <select
+              onChange={(e) => setFilter(e.target.value)}
               name='category'
+              value={filter}
               id='category'
               className='border p-4 rounded-lg'
             >
@@ -35,6 +61,8 @@ const AllJobs = () => {
           <form>
             <div className='flex p-1 overflow-hidden border rounded-lg    focus-within:ring focus-within:ring-opacity-40 focus-within:border-blue-400 focus-within:ring-blue-300'>
               <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className='px-6 py-2 text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent'
                 type='text'
                 name='search'
@@ -49,6 +77,8 @@ const AllJobs = () => {
           </form>
           <div>
             <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
               name='category'
               id='category'
               className='border p-4 rounded-md'
@@ -58,7 +88,7 @@ const AllJobs = () => {
               <option value='asc'>Ascending Order</option>
             </select>
           </div>
-          <button className='btn'>Reset</button>
+          <button onClick={handleReset} className='btn'>Reset</button>
         </div>
         <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
 

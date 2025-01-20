@@ -1,13 +1,13 @@
 import { useQuery } from "react-query"
 import UseAuth from "../hooks/UseAuth"
 import axios from "axios"
+import Swal from "sweetalert2"
 
 const BidRequests = () => {
 
   const { user } = UseAuth()
 
-
-  const { data: bidRequest = [] } = useQuery({
+  const { data: bidRequest = [], refetch } = useQuery({
     queryKey: ["request", user?.email],
     queryFn: async () => {
       const response = await axios.get(`http://localhost:9000/bid-request/${user?.email}`)
@@ -15,8 +15,30 @@ const BidRequests = () => {
     }
   })
 
-  const handleStatus = (id, prevStatus, status) => {
-    console.table({ id, prevStatus, status })
+  const handleStatus = async (id, prevStatus, status) => {
+
+    if (status === prevStatus || status === "Completed") {
+      return console.log("req. not allowed");
+
+    }
+
+    try {
+      const { data } = await axios.patch(`http://localhost:9000/bids/${id}`, { status })
+      if (data.modifiedCount > 0) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "You have updated status",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        refetch()
+      }
+
+    } catch (error) {
+      console.log(error);
+
+    }
 
   }
 
@@ -115,14 +137,39 @@ const BidRequests = () => {
                         </div>
                       </td>
                       <td className='px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap'>
-                        <div className='inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-yellow-100/60 text-yellow-500'>
-                          <span className='h-1.5 w-1.5 rounded-full bg-green-500'></span>
-                          <h2 className='text-sm font-normal '>{bid.status}</h2>
-                        </div>
+                        {bid.status === "pending" && (
+                          <div className='inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-yellow-100 text-yellow-700'>
+                            <span className='h-1.5 w-1.5 rounded-full bg-yellow-700'></span>
+                            <h2 className='text-sm font-normal '>{bid.status}</h2>
+                          </div>
+                        )}
+                        {bid.status === "In Progress" && (
+                          <div className='inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-blue-100 text-blue-700'>
+                            <span className='h-1.5 w-1.5 rounded-full bg-blue-700'></span>
+                            <h2 className='text-sm font-normal '>{bid.status}</h2>
+                          </div>
+                        )}
+                        {bid.status === "Completed" && (
+                          <div className='inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-green-100 text-green-700'>
+                            <span className='h-1.5 w-1.5 rounded-full bg-green-700'></span>
+                            <h2 className='text-sm font-normal '>{bid.status}</h2>
+                          </div>
+                        )}
+                        {bid.status === "Rejected" && (
+                          <div className='inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-red-100 text-red-700'>
+                            <span className='h-1.5 w-1.5 rounded-full bg-red-700'></span>
+                            <h2 className='text-sm font-normal '>{bid.status}</h2>
+                          </div>
+                        )}
                       </td>
+
+
                       <td className='px-4 py-4 text-sm whitespace-nowrap'>
                         <div className='flex items-center gap-x-6'>
-                          <button onClick={() => handleStatus(bid._id, bid.status, "In Progress")} className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
+                          <button
+                            disabled={bid.status !== "pending"}
+                            onClick={() => handleStatus(bid._id, bid.status, "In Progress")}
+                            className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200 hover:text-red-500 focus:outline-none'>
                             <svg
                               xmlns='http://www.w3.org/2000/svg'
                               fill='none'
@@ -139,7 +186,11 @@ const BidRequests = () => {
                             </svg>
                           </button>
 
-                          <button onClick={() => handleStatus(bid._id, bid.status, "Rejected")} className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none'>
+                          <button
+                            disabled={bid.status === "Completed" || bid.status === "Rejected"}
+                            onClick={() => handleStatus(bid._id, bid.status, "Rejected")}
+                            className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200 hover:text-yellow-500 focus:outline-none'>
+
                             <svg
                               xmlns='http://www.w3.org/2000/svg'
                               fill='none'
