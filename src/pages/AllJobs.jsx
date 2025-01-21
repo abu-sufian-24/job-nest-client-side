@@ -29,15 +29,8 @@ const AllJobs = () => {
 
 
 
-
-
-
-
-
-
-
   return (
-    <div className='container px-6 py-10 mx-auto min-h-[calc(100vh-306px)] flex flex-col justify-between'>
+    <div className='container px-10 py-10 mx-auto min-h-[calc(100vh-306px)] flex flex-col justify-between mt-16 bg-gray-100'>
       <Helmet>
         <title>JOB NEST | ALL JOBS</title>
       </Helmet>

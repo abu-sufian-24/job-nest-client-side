@@ -45,7 +45,7 @@ const MyBids = () => {
 
 
   return (
-    <section className='container px-4 mx-auto my-12'>
+    <section className='container px-4 mx-auto my-20'>
       <div className='flex items-center gap-x-3'>
         <h2 className='text-lg font-medium text-gray-800 '>My Bids</h2>
 

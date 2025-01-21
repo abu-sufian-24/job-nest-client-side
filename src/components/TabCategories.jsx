@@ -8,7 +8,7 @@ const TabCategories = () => {
   const { jobs } = UseJobs()
   return (
     <Tabs>
-      <div className=' container px-6 py-10 mx-auto'>
+      <div className=' container px-6 py-10 mx-auto bg-gray-100 '>
         <h1 className='text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl '>
           Browse Jobs By Categories
         </h1>

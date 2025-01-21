@@ -5,11 +5,11 @@ import { AuthContext } from "../providers/AuthProvider";
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   return (
-    <div className="navbar bg-base-100 shadow-sm container px-4 mx-auto">
+    <div className="navbar bg-base-100 shadow-md container px-8 fixed top-0 left-0 right-0 z-50 mx-auto">
       <div className="flex-1">
         <Link to="/" className="flex gap-2 items-center">
           <img className="w-auto h-7" src={logo} alt="" />
-          <span className="font-bold uppercase">JobNest</span>
+          <span className="font-bold uppercase">CourseCraft </span>
         </Link>
       </div>
       <div className="flex-none">
