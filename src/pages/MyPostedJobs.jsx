@@ -4,13 +4,15 @@ import { useQuery } from 'react-query'
 import axios from 'axios'
 import { format } from 'date-fns'
 import Swal from 'sweetalert2'
+import useAxios from '../hooks/UseAxiosSecure'
 
 const MyPostedJobs = () => {
   const { user } = UseAuth()
+  const axiosSecure = useAxios()
   const { data: jobs = [], refetch } = useQuery({
     queryKey: ["jobs", user?.email],
     queryFn: async () => {
-      const { data } = await axios(`http://localhost:9000/jobs/${user?.email}`)
+      const { data } = await axiosSecure.get(`/jobs/${user?.email}`)
       return data
     }
   })

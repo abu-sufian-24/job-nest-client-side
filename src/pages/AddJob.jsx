@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 const AddJob = () => {
   const [startDate, setStartDate] = useState(new Date())
   const { user } = UseAuth()
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
 
   const handleSubmit = (e) => {
@@ -39,6 +39,7 @@ const AddJob = () => {
       deadline,
       total_bids: 0
     }
+
 
 
     try {
